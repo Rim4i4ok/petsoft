@@ -7,7 +7,7 @@ function Layout({ children }: { children: React.ReactNode }) {
     <>
       <BackgroundPattern />
 
-      <div className="mx-auto max-w-[1050px]">
+      <div className="mx-auto max-w-[1050px] px-4">
         <AppHeader />
         {children}
         <AppFooter />
