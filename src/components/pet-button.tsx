@@ -43,7 +43,7 @@ function PetButton({ actionType, onClick, children }: PetButtonProps) {
           </DialogTitle>
         </DialogHeader>
 
-        <PetForm />
+        <PetForm actionType={actionType} />
       </DialogContent>
     </Dialog>
   );
