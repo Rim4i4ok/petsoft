@@ -8,12 +8,14 @@ type PetContextProviderProps = {
   children: React.ReactNode;
 };
 
+type PetWithoutId = Omit<Pet, "id">;
+
 type TPetContext = {
   pets: Pet[];
   selectedPetId: string | null;
   selectedPet: Pet | undefined;
   numberOfPets: number;
-  handleAddPet: (newPet: Pet) => void;
+  handleAddPet: (newPet: PetWithoutId) => void;
   handleCheckoutPet: (id: string) => void;
   handleChangeSelectedPetId: (id: string) => void;
 };
@@ -30,8 +32,14 @@ function PetContextProvider({ data, children }: PetContextProviderProps) {
   const numberOfPets = pets.length;
 
   // event handlers / actions
-  const handleAddPet = (newPet: Pet) => {
-    setPets((prev) => [...prev, newPet]);
+  const handleAddPet = (newPet: PetWithoutId) => {
+    setPets((prev) => [
+      ...prev,
+      {
+        ...newPet,
+        id: Date.now().toString(),
+      },
+    ]);
   };
   const handleCheckoutPet = (id: string) => {
     setPets((prev) => prev.filter((pet) => pet.id !== id));
