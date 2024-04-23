@@ -35,14 +35,6 @@ function PetContextProvider({ data, children }: PetContextProviderProps) {
 
   // event handlers / actions
   const handleAddPet = async (newPet: PetWithoutId) => {
-    // setPets((prev) => [
-    //   ...prev,
-    //   {
-    //     ...newPet,
-    //     id: Date.now().toString(),
-    //   },
-    // ]);
-
     await addPet(newPet);
   };
   const handleEditPet = (petId: string, newPetData: PetWithoutId) => {

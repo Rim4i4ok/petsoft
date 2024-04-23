@@ -1,10 +1,17 @@
 "use server";
 
-import { PetWithoutId } from "@/contexts/pet-context-provider";
 import prisma from "@/lib/db";
 
-export async function addPet(pet: PetWithoutId) {
+export async function addPet(formData: any) {
+  console.log("data ->", formData);
+
   await prisma.pet.create({
-    data: pet,
+    data: {
+      name: formData.get("name"),
+      ownerName: formData.get("ownerName"),
+      imageUrl: formData.get("imageUrl"),
+      age: Number(formData.get("age")),
+      notes: formData.get("notes"),
+    },
   });
 }
