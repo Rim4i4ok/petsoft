@@ -15,9 +15,11 @@ type PetFormProps = {
 
 function PetForm({ actionType, onFormSubmission }: PetFormProps) {
   const { selectedPet } = usePetContext();
+  // const [error, formAction] = useFormState(addPet, {});
 
   return (
     <form
+      // action={formAction}
       action={async (formData) => {
         const error = await addPet(formData);
         if (error) {
@@ -28,6 +30,7 @@ function PetForm({ actionType, onFormSubmission }: PetFormProps) {
       }}
       className="flex flex-col"
     >
+      {/* {error && <p className="text-red-500">{error.message}</p>} */}
       <div className="space-y-3">
         <div className="space-y-1">
           <Label htmlFor="name">Name</Label>
