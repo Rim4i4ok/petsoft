@@ -16,9 +16,6 @@ type TPetContext = {
   selectedPetId: string | null;
   selectedPet: Pet | undefined;
   numberOfPets: number;
-  handleAddPet: (newPet: PetWithoutId) => void;
-  handleEditPet: (petId: string, newPetData: PetWithoutId) => void;
-  handleCheckoutPet: (id: string) => void;
   handleChangeSelectedPetId: (id: string) => void;
 };
 
@@ -33,22 +30,6 @@ function PetContextProvider({ data: pets, children }: PetContextProviderProps) {
   const numberOfPets = pets.length;
 
   // event handlers / actions
-  const handleAddPet = async (newPet: PetWithoutId) => {
-    await addPet(newPet);
-  };
-  const handleEditPet = (petId: string, newPetData: PetWithoutId) => {
-    setPets((prev) =>
-      prev.map((pet) => {
-        if (pet.id === petId) {
-          return {
-            id: petId,
-            ...newPetData,
-          };
-        }
-        return pet;
-      }),
-    );
-  };
   const handleCheckoutPet = (id: string) => {
     setPets((prev) => prev.filter((pet) => pet.id !== id));
     setSelectedPetId(null);
@@ -64,8 +45,6 @@ function PetContextProvider({ data: pets, children }: PetContextProviderProps) {
         selectedPetId,
         selectedPet,
         numberOfPets,
-        handleAddPet,
-        handleEditPet,
         handleCheckoutPet,
         handleChangeSelectedPetId,
       }}
