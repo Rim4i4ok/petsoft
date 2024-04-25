@@ -1,11 +1,11 @@
 "use server";
 
-import { PetWithoutId } from "@/contexts/pet-context-provider";
 import prisma from "@/lib/db";
+import { PetEssentials, PetId } from "@/lib/types";
 import { sleep } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
 
-export async function addPet(pet: PetWithoutId) {
+export async function addPet(pet: PetEssentials) {
   await sleep(2000);
 
   try {
@@ -21,7 +21,7 @@ export async function addPet(pet: PetWithoutId) {
   revalidatePath("/app", "layout");
 }
 
-export async function editPet(petId: string, newPetData: PetWithoutId) {
+export async function editPet(petId: PetId, newPetData: PetEssentials) {
   await sleep(2000);
 
   try {
@@ -40,7 +40,7 @@ export async function editPet(petId: string, newPetData: PetWithoutId) {
   revalidatePath("/app", "layout");
 }
 
-export async function deletePet(petId: string) {
+export async function deletePet(petId: PetId) {
   await sleep(2000);
 
   try {
