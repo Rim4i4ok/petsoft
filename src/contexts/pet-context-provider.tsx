@@ -29,14 +29,22 @@ function PetContextProvider({ data, children }: PetContextProviderProps) {
   // state
   const [optimisticPets, setOptimisticPets] = useOptimistic(
     data,
-    (state, newPet) => {
-      return [
-        ...state,
-        {
-          ...newPet,
-          id: Date.now(),
-        },
-      ];
+    (prev, { action, payload }) => {
+      switch (action) {
+        case "add":
+          return [...prev, { ...payload, id: Date.now() }];
+        case "edit":
+          return prev.map((pet) => {
+            if (pet.id === payload.id) {
+              return { ...pet, ...payload.newPetData };
+            }
+            return pet;
+          });
+        case "delete":
+          return prev.filter((pet) => pet.id !== payload);
+        default:
+          return prev;
+      }
     },
   );
   const [selectedPetId, setSelectedPetId] = useState<string | null>(null);
@@ -47,7 +55,7 @@ function PetContextProvider({ data, children }: PetContextProviderProps) {
 
   // event handlers / actions
   const handleAddPet = async (newPet: PetWithoutId) => {
-    setOptimisticPets(newPet);
+    setOptimisticPets({ action: "add", payload: newPet });
     const error = await addPet(newPet);
     if (error) {
       toast.warning(error.message);
@@ -55,6 +63,7 @@ function PetContextProvider({ data, children }: PetContextProviderProps) {
     }
   };
   const handleEditPet = async (petId: string, newPetData: PetWithoutId) => {
+    setOptimisticPets({ action: "edit", payload: { id: petId, newPetData } });
     const error = await editPet(petId, newPetData);
     if (error) {
       toast.warning(error.message);
@@ -62,7 +71,12 @@ function PetContextProvider({ data, children }: PetContextProviderProps) {
     }
   };
   const handleCheckoutPet = async (id: string) => {
-    await deletePet(id);
+    setOptimisticPets({ action: "delete", payload: id });
+    const error = await deletePet(id);
+    if (error) {
+      toast.warning(error.message);
+      return;
+    }
     setSelectedPetId(null);
   };
   const handleChangeSelectedPetId = (id: string) => {
