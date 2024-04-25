@@ -1,41 +1,19 @@
 "use client";
 
+import { EMPTY_PET_IMAGE } from "@/lib/constants";
 import { usePetContext } from "@/lib/hooks";
+import { TPetForm, petFormSchema } from "@/lib/validations";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 import PetFormBtn from "./pet-form-btn";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Textarea } from "./ui/textarea";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { EMPTY_PET_IMAGE } from "@/lib/constants";
 
 type PetFormProps = {
   actionType: "add" | "edit";
   onFormSubmission: () => void;
 };
-
-const petFormSchema = z
-  .object({
-    name: z.string().trim().min(1, { message: "Name is required" }).max(100),
-    ownerName: z
-      .string()
-      .trim()
-      .min(1, { message: "Owner name is required" })
-      .max(100),
-    imageUrl: z.union([
-      z.literal(""),
-      z.string().trim().url({ message: "Image url must be a valid url" }),
-    ]),
-    age: z.coerce.number().int().positive().max(999),
-    notes: z.union([z.literal(""), z.string().trim().max(1000)]),
-  })
-  .transform((data) => ({
-    ...data,
-    imageUrl: data.imageUrl || EMPTY_PET_IMAGE,
-  }));
-
-type TPetForm = z.infer<typeof petFormSchema>;
 
 function PetForm({ actionType, onFormSubmission }: PetFormProps) {
   const { selectedPet, handleAddPet, handleEditPet } = usePetContext();
