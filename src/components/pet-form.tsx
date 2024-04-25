@@ -37,6 +37,7 @@ function PetForm({ actionType, onFormSubmission }: PetFormProps) {
   const {
     register,
     trigger,
+    getValues,
     formState: { errors },
   } = useForm<TPetForm>({
     resolver: zodResolver(petFormSchema),
@@ -50,15 +51,7 @@ function PetForm({ actionType, onFormSubmission }: PetFormProps) {
 
         onFormSubmission();
 
-        const petData = {
-          name: formData.get("name") as string,
-          ownerName: formData.get("ownerName") as string,
-          imageUrl:
-            (formData.get("imageUrl") as string) ||
-            "https://bytegrad.com/course-assets/react-nextjs/pet-placeholder.png",
-          age: Number(formData.get("age")),
-          notes: formData.get("notes") as string,
-        };
+        const petData = getValues();
 
         if (actionType === "add") {
           await handleAddPet(petData);
