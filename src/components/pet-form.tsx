@@ -51,13 +51,14 @@ function PetForm({ actionType, onFormSubmission }: PetFormProps) {
 
   return (
     <form
-      action={async (formData) => {
+      action={async () => {
         const result = await trigger();
         if (!result) return;
 
         onFormSubmission();
 
         const petData = getValues();
+        petData.imageUrl = petData.imageUrl || EMPTY_PET_IMAGE;
 
         if (actionType === "add") {
           await handleAddPet(petData);
