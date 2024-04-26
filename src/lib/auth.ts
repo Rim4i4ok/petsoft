@@ -1,7 +1,7 @@
+import bcrypt from "bcryptjs";
 import NextAuth, { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import prisma from "./db";
-import bcrypt from "bcryptjs";
 
 const config = {
   pages: {
@@ -41,11 +41,14 @@ const config = {
     }),
   ],
   callbacks: {
-    authorized: ({ request }) => {
+    authorized: ({ auth, request }) => {
       // runs on every request with middleware
+      const isLoggedIn = Boolean(auth?.user);
       const isTryingToAccessApp = request.nextUrl.pathname.includes("/app");
 
-      if (isTryingToAccessApp) return false;
+      if (!isLoggedIn && isTryingToAccessApp) return false;
+      if (isLoggedIn && isTryingToAccessApp) return true;
+
       return true;
     },
   },
