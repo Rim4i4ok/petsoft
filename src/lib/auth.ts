@@ -46,10 +46,24 @@ const config = {
       const isLoggedIn = Boolean(auth?.user);
       const isTryingToAccessApp = request.nextUrl.pathname.includes("/app");
 
-      if (!isLoggedIn && isTryingToAccessApp) return false;
-      if (isLoggedIn && isTryingToAccessApp) return true;
+      // No logged-in user, redirect all attempts to access "/app" to login
+      if (!isLoggedIn) {
+        return isTryingToAccessApp ? false : true;
+      }
 
-      return true;
+      // Existing logged-in user
+      if (isLoggedIn) {
+        // Redirect user to dashboard when they're not trying to access "/app"
+        if (!isTryingToAccessApp) {
+          return Response.redirect(new URL("/app/dashboard", request.nextUrl));
+        }
+
+        // Allow the logged-in user to access "/app"
+        return true;
+      }
+
+      // Catch all - should ideally not reach here
+      return false;
     },
   },
 } satisfies NextAuthConfig;
