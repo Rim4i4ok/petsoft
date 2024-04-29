@@ -72,6 +72,21 @@ const config = {
       else if (new URL(url).origin === baseUrl) return url;
       return baseUrl;
     },
+    jwt: ({ token, user }) => {
+      if (user) {
+        // on sign in
+        token.userId = user.id;
+      }
+
+      return token;
+    },
+    session: ({ session, token }) => {
+      if (session.user) {
+        session.user.id = token.userId;
+      }
+
+      return session;
+    },
   },
 } satisfies NextAuthConfig;
 
