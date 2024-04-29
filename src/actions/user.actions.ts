@@ -1,7 +1,7 @@
 "use server";
 
 import { signIn, signOut } from "@/lib/auth";
-import prisma from "@/lib/db";
+import { addNewUser } from "@/lib/utils.prisma";
 import bcrypt from "bcryptjs";
 
 export async function logIn(formData: FormData) {
@@ -14,12 +14,7 @@ export async function signUp(formData: FormData) {
     10,
   );
 
-  await prisma.user.create({
-    data: {
-      email: formData.get("email") as string,
-      hashedPassword: hashedPassword,
-    },
-  });
+  await addNewUser(formData.get("email") as string, hashedPassword);
 
   await signIn("credentials", formData);
 }

@@ -1,4 +1,7 @@
-import { Pet } from "@prisma/client";
+import { Pet, User } from "@prisma/client";
 
 export type PetEssentials = Omit<Pet, "id" | "updatedAt" | "createdAt">;
 export type PetId = Pet["id"];
+export type UserId = User["id"];
+export type UserEmail = User["email"];
+export type UserHashedPassword = User["hashedPassword"];

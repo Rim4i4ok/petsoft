@@ -1,7 +1,12 @@
 "use server";
 
-import prisma from "@/lib/db";
 import { sleep } from "@/lib/utils.client";
+import {
+  addNewPet,
+  deletePetById,
+  getPetById,
+  updatePetById,
+} from "@/lib/utils.prisma";
 import { checkAuth } from "@/lib/utils.server";
 import { petFormSchema, petIdSchema } from "@/lib/validations";
 import { revalidatePath } from "next/cache";
@@ -19,16 +24,7 @@ export async function addPet(pet: unknown) {
   }
 
   try {
-    await prisma.pet.create({
-      data: {
-        ...validatedPet.data,
-        user: {
-          connect: {
-            id: session.user.id,
-          },
-        },
-      },
-    });
+    await addNewPet(validatedPet.data, session.user.id);
   } catch (error) {
     return {
       message: "Could not add pet.",
@@ -55,14 +51,7 @@ export async function editPet(petId: unknown, newPetData: unknown) {
   }
 
   // authorization check
-  const pet = await prisma.pet.findUnique({
-    where: {
-      id: validatedPetId.data,
-    },
-    select: {
-      userId: true,
-    },
-  });
+  const pet = await getPetById(validatedPetId.data);
   if (!pet) {
     return { message: "Pet not found" };
   }
@@ -74,12 +63,7 @@ export async function editPet(petId: unknown, newPetData: unknown) {
 
   // database mutation
   try {
-    await prisma.pet.update({
-      where: {
-        id: validatedPetId.data,
-      },
-      data: validatedPet.data,
-    });
+    await updatePetById(validatedPetId.data, validatedPet.data);
   } catch (error) {
     return {
       message: "Could not edit pet.",
@@ -104,14 +88,7 @@ export async function deletePet(petId: unknown) {
   }
 
   // authorization check
-  const pet = await prisma.pet.findUnique({
-    where: {
-      id: validatedPetId.data,
-    },
-    select: {
-      userId: true,
-    },
-  });
+  const pet = await getPetById(validatedPetId.data);
   if (!pet) {
     return { message: "Pet not found" };
   }
@@ -123,11 +100,7 @@ export async function deletePet(petId: unknown) {
 
   // database mutation
   try {
-    await prisma.pet.delete({
-      where: {
-        id: validatedPetId.data,
-      },
-    });
+    await deletePetById(validatedPetId.data);
   } catch (error) {
     return {
       message: "Could not delete pet.",
