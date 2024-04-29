@@ -1,12 +1,6 @@
 import "server-only";
 import prisma from "./db";
-import {
-  PetId,
-  UserEmail,
-  UserHashedPassword,
-  UserId,
-  UserPassword,
-} from "./types";
+import { PetId, UserEmail, UserHashedPassword, UserId } from "./types";
 import { TPetForm } from "./validations";
 
 // Pet functions
