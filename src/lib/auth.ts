@@ -65,6 +65,13 @@ const config = {
       // Catch all - should ideally not reach here
       return false;
     },
+    redirect: async ({ baseUrl, url }) => {
+      // Allows relative callback URLs
+      if (url.startsWith("/")) return `${baseUrl}${url}`;
+      // Allows callback URLs on the same origin
+      else if (new URL(url).origin === baseUrl) return url;
+      return baseUrl;
+    },
   },
 } satisfies NextAuthConfig;
 
