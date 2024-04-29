@@ -26,7 +26,7 @@ export async function addPet(pet: unknown) {
     await prisma.pet.create({
       data: {
         ...validatedPet.data,
-        User: {
+        user: {
           connect: {
             id: session.user.id,
           },
