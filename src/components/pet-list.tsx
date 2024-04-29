@@ -1,7 +1,7 @@
 "use client";
 
 import { usePetContext, useSearchContext } from "@/lib/hooks";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils.client";
 import Image from "next/image";
 
 function PetList() {
@@ -13,7 +13,7 @@ function PetList() {
   );
 
   return (
-    <ul className="border-light border-b bg-white">
+    <ul className="border-b border-light bg-white">
       {filteredPets.map((pet) => (
         <li key={pet.id}>
           <button

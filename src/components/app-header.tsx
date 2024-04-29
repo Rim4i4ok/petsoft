@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Logo from "./logo";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils.client";
 
 const routes = [
   {

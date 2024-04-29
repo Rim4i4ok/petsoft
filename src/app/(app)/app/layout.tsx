@@ -4,15 +4,11 @@ import BackgroundPattern from "@/components/background-pattern";
 import { Toaster } from "@/components/ui/sonner";
 import PetContextProvider from "@/contexts/pet-context-provider";
 import SearchContextProvider from "@/contexts/search-context-provider";
-import { auth } from "@/lib/auth";
 import prisma from "@/lib/db";
-import { redirect } from "next/navigation";
+import { checkAuth } from "@/lib/utils.server";
 
 async function Layout({ children }: { children: React.ReactNode }) {
-  const session = await auth();
-  if (!session?.user) {
-    redirect("/");
-  }
+  const session = await checkAuth();
 
   const pets = await prisma.pet.findMany({
     where: {

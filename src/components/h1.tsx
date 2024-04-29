@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils.client";
 
 type H1Props = {
   children: React.ReactNode;
