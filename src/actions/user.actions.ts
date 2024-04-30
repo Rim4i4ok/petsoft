@@ -6,9 +6,10 @@ import { addNewUser } from "@/lib/utils.prisma";
 import { authSchema } from "@/lib/validations";
 import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { AuthError } from "next-auth";
 import { redirect } from "next/navigation";
 
-export async function logIn(formData: unknown) {
+export async function logIn(prevState: unknown, formData: unknown) {
   await sleep(2000);
 
   // check if formData is a FormData type
@@ -18,12 +19,33 @@ export async function logIn(formData: unknown) {
     };
   }
 
-  await signIn("credentials", formData);
+  try {
+    await signIn("credentials", formData);
+  } catch (error) {
+    console.error(error);
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin":
+          return {
+            message: "Invalid credentials.",
+          };
+        default: {
+          return {
+            message: "Could not sign in.",
+          };
+        }
+      }
+    }
+
+    return {
+      message: "Could not sign in.",
+    };
+  }
 
   redirect("/app/dashboard");
 }
 
-export async function signUp(formData: unknown) {
+export async function signUp(prevState: unknown, formData: unknown) {
   await sleep(2000);
 
   // check if formData is a FormData type
