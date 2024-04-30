@@ -42,7 +42,14 @@ export async function signUp(formData: unknown) {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  await addNewUser(email, hashedPassword);
+  try {
+    await addNewUser(email, hashedPassword);
+  } catch (error) {
+    console.error(error);
+    return {
+      message: "Could not add user.",
+    };
+  }
 
   await signIn("credentials", formData);
 }

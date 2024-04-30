@@ -26,6 +26,7 @@ export async function addPet(pet: unknown) {
   try {
     await addNewPet(validatedPet.data, session.user.id);
   } catch (error) {
+    console.error(error);
     return {
       message: "Could not add pet.",
     };
@@ -65,6 +66,7 @@ export async function editPet(petId: unknown, newPetData: unknown) {
   try {
     await updatePetById(validatedPetId.data, validatedPet.data);
   } catch (error) {
+    console.error(error);
     return {
       message: "Could not edit pet.",
     };
@@ -102,6 +104,7 @@ export async function deletePet(petId: unknown) {
   try {
     await deletePetById(validatedPetId.data);
   } catch (error) {
+    console.error(error);
     return {
       message: "Could not delete pet.",
     };
