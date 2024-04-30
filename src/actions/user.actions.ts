@@ -2,8 +2,8 @@
 
 import { signIn, signOut } from "@/lib/auth";
 import { addNewUser } from "@/lib/utils.prisma";
-import { authSchema } from "@/lib/validations";
 import bcrypt from "bcryptjs";
+import { redirect } from "next/navigation";
 
 export async function logIn(formData: unknown) {
   // check if formData is a FormData type
@@ -13,18 +13,9 @@ export async function logIn(formData: unknown) {
     };
   }
 
-  // convert formData to an object
-  const formDataObject = Object.fromEntries(formData.entries());
+  await signIn("credentials", formData);
 
-  // validate to object
-  const validatedFormDataObject = authSchema.safeParse(formDataObject);
-  if (!validatedFormDataObject.success) {
-    return {
-      message: "Invalid form data.",
-    };
-  }
-
-  await signIn("credentials", validatedFormDataObject.data);
+  redirect("/app/dashboard");
 }
 
 export async function signUp(formData: FormData) {
