@@ -3,6 +3,7 @@
 import { signIn, signOut } from "@/lib/auth";
 import { addNewUser } from "@/lib/utils.prisma";
 import { authSchema } from "@/lib/validations";
+import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 
@@ -46,6 +47,13 @@ export async function signUp(formData: unknown) {
     await addNewUser(email, hashedPassword);
   } catch (error) {
     console.error(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return {
+          message: "Email already exists.",
+        };
+      }
+    }
     return {
       message: "Could not add user.",
     };
