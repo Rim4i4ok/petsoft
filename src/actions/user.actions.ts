@@ -1,6 +1,7 @@
 "use server";
 
 import { signIn, signOut } from "@/lib/auth";
+import { sleep } from "@/lib/utils.client";
 import { addNewUser } from "@/lib/utils.prisma";
 import { authSchema } from "@/lib/validations";
 import { Prisma } from "@prisma/client";
@@ -8,6 +9,8 @@ import bcrypt from "bcryptjs";
 import { redirect } from "next/navigation";
 
 export async function logIn(formData: unknown) {
+  await sleep(2000);
+
   // check if formData is a FormData type
   if (!(formData instanceof FormData)) {
     return {
@@ -21,6 +24,8 @@ export async function logIn(formData: unknown) {
 }
 
 export async function signUp(formData: unknown) {
+  await sleep(2000);
+
   // check if formData is a FormData type
   if (!(formData instanceof FormData)) {
     return {
