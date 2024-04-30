@@ -7,7 +7,6 @@ import { authSchema } from "@/lib/validations";
 import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { AuthError } from "next-auth";
-import { redirect } from "next/navigation";
 
 export async function logIn(prevState: unknown, formData: unknown) {
   await sleep(2000);
@@ -31,18 +30,14 @@ export async function logIn(prevState: unknown, formData: unknown) {
           };
         default: {
           return {
-            message: "Could not sign in.",
+            message: "Error. Could not sign in.",
           };
         }
       }
     }
 
-    return {
-      message: "Could not sign in.",
-    };
+    throw error; // nextjs redirects throws error, so we need to rethrow it
   }
-
-  redirect("/app/dashboard");
 }
 
 export async function signUp(prevState: unknown, formData: unknown) {
