@@ -51,27 +51,29 @@ const config = {
       const isLoggedIn = Boolean(auth?.user);
       const isTryingToAccessApp = request.nextUrl.pathname.includes("/app");
 
-      // No logged-in user, redirect all attempts to access "/app" to login
-      if (!isLoggedIn) {
-        return isTryingToAccessApp ? false : true;
+      if (!isLoggedIn && isTryingToAccessApp) {
+        return false;
+      }
+
+      if (isLoggedIn && isTryingToAccessApp && !auth?.user.hasAccess) {
+        return Response.redirect(new URL("/payment", request.nextUrl));
+      }
+
+      if (isLoggedIn && isTryingToAccessApp && auth?.user.hasAccess) {
+        return true;
       }
 
       // Existing logged-in user
-      if (isLoggedIn) {
-        if (isTryingToAccessApp && auth?.user.hasAccess)
-          if (!isTryingToAccessApp) {
-            // Redirect user to dashboard when they're not trying to access "/app"
-            if (
-              request.nextUrl.pathname.includes("/login") ||
-              request.nextUrl.pathname.includes("/signup")
-            ) {
-              return Response.redirect(new URL("/payment", request.nextUrl));
-            }
+      if (isLoggedIn && !isTryingToAccessApp) {
+        // Redirect user to dashboard when they're not trying to access "/app"
+        if (
+          request.nextUrl.pathname.includes("/login") ||
+          (request.nextUrl.pathname.includes("/signup") &&
+            !auth?.user.hasAccess)
+        ) {
+          return Response.redirect(new URL("/app/dashboard", request.nextUrl));
+        }
 
-            return true;
-          }
-
-        // Allow the logged-in user to access "/app"
         return true;
       }
 
@@ -89,6 +91,7 @@ const config = {
       if (user) {
         // on sign in
         token.userId = user.id;
+        token.hasAccess = user.hasAccess;
       }
 
       return token;
@@ -96,6 +99,7 @@ const config = {
     session: ({ session, token }) => {
       if (session.user) {
         session.user.id = token.userId;
+        session.user.hasAccess = token.hasAccess;
       }
 
       return session;
