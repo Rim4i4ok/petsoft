@@ -1,5 +1,7 @@
+import AccessPaymentBtn from "@/components/access-payment-btn";
 import H1 from "@/components/h1";
 import PaymentBtn from "@/components/payment-btn";
+import { Button } from "@/components/ui/button";
 
 function Page({
   searchParams,
@@ -10,6 +12,7 @@ function Page({
     <main className="flex flex-col items-center space-y-10">
       <H1>PetSoft access requires payment</H1>
 
+      {searchParams.success && <AccessPaymentBtn />}
       {!searchParams.success && <PaymentBtn />}
 
       {searchParams.success && (
