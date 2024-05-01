@@ -1,7 +1,11 @@
 import H1 from "@/components/h1";
 import PaymentBtn from "@/components/payment-btn";
 
-function Page({ searchParams }) {
+function Page({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
   console.log(searchParams);
   return (
     <main className="flex flex-col items-center space-y-10">
