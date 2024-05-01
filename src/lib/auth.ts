@@ -58,17 +58,18 @@ const config = {
 
       // Existing logged-in user
       if (isLoggedIn) {
-        // Redirect user to dashboard when they're not trying to access "/app"
-        if (!isTryingToAccessApp) {
-          if (
-            request.nextUrl.pathname.includes("/login") ||
-            request.nextUrl.pathname.includes("/signup")
-          ) {
-            return Response.redirect(new URL("/payment", request.nextUrl));
-          }
+        if (isTryingToAccessApp && auth?.user.hasAccess)
+          if (!isTryingToAccessApp) {
+            // Redirect user to dashboard when they're not trying to access "/app"
+            if (
+              request.nextUrl.pathname.includes("/login") ||
+              request.nextUrl.pathname.includes("/signup")
+            ) {
+              return Response.redirect(new URL("/payment", request.nextUrl));
+            }
 
-          return true;
-        }
+            return true;
+          }
 
         // Allow the logged-in user to access "/app"
         return true;
