@@ -11,7 +11,7 @@ export async function createCheckoutSession() {
 
   // create checkout session
   const checkoutSession = await stripe.checkout.sessions.create({
-    email: session.user.email,
+    customer_email: session.user.email,
     line_items: [
       {
         price: "price_1PBZQJBRTVyulFn75ofjTK6C",
