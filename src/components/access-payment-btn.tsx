@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
 function AccessPaymentBtn() {
-  const { update } = useSession();
+  const { update, status, data: session } = useSession();
   const router = useRouter();
 
   return (
@@ -14,6 +14,7 @@ function AccessPaymentBtn() {
         await update(true);
         router.push("/app/dashboard");
       }}
+      disabled={status === "loading" || session?.user.hasAccess}
     >
       Access PetSoft
     </Button>

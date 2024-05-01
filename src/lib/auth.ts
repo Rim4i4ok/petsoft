@@ -4,6 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 
 import { authSchema } from "@/lib/validations";
 import { getUserByEmail } from "./utils.prisma";
+import { sleep } from "./utils.client";
 
 const config = {
   pages: {
@@ -96,6 +97,8 @@ const config = {
       }
 
       if (trigger === "update") {
+        await sleep(2000);
+
         // on every request
         const userFromDb = await getUserByEmail(token.email);
         if (userFromDb) {
