@@ -1,6 +1,6 @@
 "use server";
 
-import { signIn, signOut } from "@/lib/auth";
+import { signIn, signOut } from "@/lib/auth-no-edge";
 import { sleep } from "@/lib/utils.client";
 import { addNewUser } from "@/lib/utils.prisma";
 import { authSchema } from "@/lib/validations";
