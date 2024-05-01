@@ -79,3 +79,12 @@ export async function getUserByEmail(email: UserEmail) {
 
   return user;
 }
+
+export async function updateUserAccess(email: UserEmail) {
+  await prisma.user.update({
+    where: { email },
+    data: {
+      hasAccess: true,
+    },
+  });
+}

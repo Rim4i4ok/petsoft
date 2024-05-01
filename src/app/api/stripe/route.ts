@@ -1,4 +1,4 @@
-import prisma from "@/lib/db";
+import { updateUserAccess } from "@/lib/utils.prisma";
 
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
@@ -23,12 +23,7 @@ export async function POST(request: Request) {
   // fulfill order
   switch (event.type) {
     case "checkout.session.completed":
-      await prisma.user.update({
-        where: { email: event.data.object.customer_email },
-        data: {
-          hasAccess: true,
-        },
-      });
+      await updateUserAccess(event.data.object.customer_email);
       break;
 
     default:
