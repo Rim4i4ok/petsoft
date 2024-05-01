@@ -48,49 +48,35 @@ const config = {
   ],
   callbacks: {
     authorized: ({ auth, request }) => {
-      // runs on every request with middleware
       const isLoggedIn = Boolean(auth?.user);
       const isTryingToAccessApp = request.nextUrl.pathname.includes("/app");
+      const nextPath = request.nextUrl.pathname;
 
-      if (!isLoggedIn && isTryingToAccessApp) {
-        return false;
+      if (!isLoggedIn) {
+        return isTryingToAccessApp ? false : true;
       }
 
-      if (!isLoggedIn && !isTryingToAccessApp) {
-        return true;
+      if (isTryingToAccessApp) {
+        if (!auth?.user.hasAccess) {
+          return Response.redirect(new URL("/payment", request.nextUrl));
+        } else {
+          return true;
+        }
       }
 
-      if (isLoggedIn && isTryingToAccessApp && !auth?.user.hasAccess) {
+      if (nextPath.includes("/login") || nextPath.includes("/signup")) {
+        if (auth?.user.hasAccess) {
+          return Response.redirect(new URL("/app/dashboard", request.nextUrl));
+        } else {
+          return Response.redirect(new URL("/payment", request.nextUrl));
+        }
+      }
+
+      // Existing logged-in user not trying to access "/app"
+      if (!auth?.user.hasAccess) {
         return Response.redirect(new URL("/payment", request.nextUrl));
       }
 
-      if (isLoggedIn && isTryingToAccessApp && auth?.user.hasAccess) {
-        return true;
-      }
-
-      if (
-        isLoggedIn &&
-        (request.nextUrl.pathname.includes("/login") ||
-          request.nextUrl.pathname.includes("/signup")) &&
-        auth?.user.hasAccess
-      ) {
-        return Response.redirect(new URL("/app/dashboard", request.nextUrl));
-      }
-
-      // Existing logged-in user
-      if (isLoggedIn && !isTryingToAccessApp && !auth?.user.hasAccess) {
-        // Redirect user to dashboard when they're not trying to access "/app"
-        if (
-          request.nextUrl.pathname.includes("/login") ||
-          request.nextUrl.pathname.includes("/signup")
-        ) {
-          return Response.redirect(new URL("/payment", request.nextUrl));
-        }
-
-        return true;
-      }
-
-      // Catch all - should ideally not reach here
       return false;
     },
     redirect: async ({ baseUrl, url }) => {
