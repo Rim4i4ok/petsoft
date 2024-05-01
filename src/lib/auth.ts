@@ -60,7 +60,14 @@ const config = {
       if (isLoggedIn) {
         // Redirect user to dashboard when they're not trying to access "/app"
         if (!isTryingToAccessApp) {
-          return Response.redirect(new URL("/app/dashboard", request.nextUrl));
+          if (
+            request.nextUrl.pathname.includes("/login") ||
+            request.nextUrl.pathname.includes("/signup")
+          ) {
+            return Response.redirect(new URL("/payment", request.nextUrl));
+          }
+
+          return true;
         }
 
         // Allow the logged-in user to access "/app"
