@@ -56,6 +56,10 @@ const config = {
         return false;
       }
 
+      if (!isLoggedIn && !isTryingToAccessApp) {
+        return true;
+      }
+
       if (isLoggedIn && isTryingToAccessApp && !auth?.user.hasAccess) {
         return Response.redirect(new URL("/payment", request.nextUrl));
       }
@@ -64,15 +68,23 @@ const config = {
         return true;
       }
 
+      if (
+        isLoggedIn &&
+        (request.nextUrl.pathname.includes("/login") ||
+          request.nextUrl.pathname.includes("/signup")) &&
+        auth?.user.hasAccess
+      ) {
+        return Response.redirect(new URL("/app/dashboard", request.nextUrl));
+      }
+
       // Existing logged-in user
-      if (isLoggedIn && !isTryingToAccessApp) {
+      if (isLoggedIn && !isTryingToAccessApp && !auth?.user.hasAccess) {
         // Redirect user to dashboard when they're not trying to access "/app"
         if (
           request.nextUrl.pathname.includes("/login") ||
-          (request.nextUrl.pathname.includes("/signup") &&
-            !auth?.user.hasAccess)
+          request.nextUrl.pathname.includes("/signup")
         ) {
-          return Response.redirect(new URL("/app/dashboard", request.nextUrl));
+          return Response.redirect(new URL("/payment", request.nextUrl));
         }
 
         return true;
